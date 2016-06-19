@@ -37,3 +37,13 @@ function getRow (element) {
   }
 }
 
+// Get row of an element
+function getCol (element) {
+  var classes = element.classList
+  for (var i = 0; i < classes.length; i++) {
+    if (classes[i].substring(0,3) === 'col') {
+      return classes[i].split('-')[1]
+    }
+  }
+}
+
