@@ -5,18 +5,17 @@ var board = {
 }
 
 function startGame () {
+  // Generate board
+  generateBoard(5)
+
+  // Add event listeners
   var boardCells = document.getElementsByClassName('board')[0].children
   for (var i = 0; i < boardCells.length; i++) {
     addListeners(boardCells[i])
-    addCellToBoard(boardCells[i])
-  }
-
-  for (var i = 0; i < board.cells.length; i++) {
-      board.cells[i].surroundingMines = countSurroundingMines(board.cells[i])
   }
 }
 
-// Add event listener click on all elements of the board
+// Add event listener click on one element
 function addListeners (element) {
   element.addEventListener('click', showCell)
   element.addEventListener('contextmenu', markCell)
@@ -161,4 +160,56 @@ function resetGame () {
 
   // Start game again
   startGame()
+}
+
+// Generate the board object and HTML board
+function generateBoard (boardSize) {
+  // Add cells to board with the row and col parameters
+  for (i = 0; i < boardSize; i++) {
+    for (var j = 0; j < boardSize; j++) {
+      var cell = {}
+      cell.row = i
+      cell.col = j
+      board.cells.push(cell)
+    }
+  }
+
+  // Generate mines coordinates randomly
+  var mines = []
+  for (var i = 0; i < boardSize; i++) {
+    var mine = {}
+    mine.row = getRandomIntInclusive(0, boardSize - 1)
+    mine.col = getRandomIntInclusive(0, boardSize - 1)
+    mines.push(mine)
+  }
+
+  // Include mine flag in board
+  // set isMine = true if included in mines
+  // trying Array.prototype.forEach
+  board.cells.forEach(function (cell) {
+    mines.forEach(function (mine) {
+      if (cell.row === mine.row && cell.col === mine. col) {
+        cell.isMine = true
+      }
+    })
+    if (!cell.hasOwnProperty('isMine')) {
+      cell.isMine = false
+    }
+  })
+
+  // Count surrounding mines using existing function
+  for (var i = 0; i < board.cells.length; i++) {
+      board.cells[i].surroundingMines = countSurroundingMines(board.cells[i])
+  }
+
+  // Create board in HTML based on board object 
+  // Each div should have row-x col-y hidden
+
+}
+
+// From MDN:
+// Returns a random integer between min (included) and max (included)
+// Using Math.round() will give you a non-uniform distribution!
+function getRandomIntInclusive(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
