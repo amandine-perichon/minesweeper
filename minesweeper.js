@@ -44,6 +44,7 @@ function showCell (evt) {
 
   // Check if user has won
   if (checkForWin()) {
+    document.getElementById('applause').play()
     window.alert('You won')
     resetGame()
   }
@@ -58,6 +59,7 @@ function markCell (evt) {
 
  // Check if user has won
   if (checkForWin()) {
+    document.getElementById('applause').play()
     window.alert('You won')
     resetGame()
   }
@@ -125,6 +127,7 @@ function showAllMines () {
       boardCells[i].classList.remove('hidden')
     }
   }
+  document.getElementById('bomb').play()
 }
 
 function elementToCell (element) {
