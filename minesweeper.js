@@ -9,7 +9,10 @@ function startGame () {
   for (var i = 0; i < boardCells.length; i++) {
     addListeners(boardCells[i])
     addCellToBoard(boardCells[i])
-    board.cells[i].surroundingMines = countSurroundingMines(board.cells[i])
+  }
+
+  for (var i = 0; i < board.cells.length; i++) {
+      board.cells[i].surroundingMines = countSurroundingMines(board.cells[i])
   }
 }
 
@@ -35,7 +38,7 @@ function showCell (evt) {
     showAllMines()
     window.alert('You lose')
   } else {
-  showSurrounding(evt.target)
+    showSurrounding(evt.target)
   }
 
   // Check if user has won
@@ -49,15 +52,7 @@ function markCell (evt) {
   evt.preventDefault()
   evt.target.classList.toggle('marked')
   evt.target.classList.toggle('hidden')
-
-  // Keep track of marked cells in global objects
-  for (var i = 0; i < board.cells.length; i++) {
-    if (board.cells[i].row === getRow(evt.target) &&
-    board.cells[i].col === getCol(evt.target)) {
-      board.cells[i].isMarked = true
-      break
-    }
-  }
+  elementToCell(evt.target).isMarked = true
 
  // Check if user has won
   if (checkForWin()) {
@@ -94,6 +89,7 @@ function countSurroundingMines (cell) {
       count++
     }
   }
+  console.log(count)
   return count
 }
 
@@ -129,3 +125,14 @@ function showAllMines () {
   }
 }
 
+function elementToCell (element) {
+  for (var i = 0; i < board.cells.length; i++) {
+    var cell
+    if (board.cells[i].row === getRow(element) &&
+    board.cells[i].col === getCol(element)) {
+      cell = board.cells[i]
+      break
+    }
+  }
+  return cell
+}
