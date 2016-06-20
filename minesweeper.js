@@ -37,6 +37,7 @@ function showCell (evt) {
   if (evt.target.classList.contains('mine')) {
     showAllMines()
     window.alert('You lose')
+    resetGame()
   } else {
     showSurrounding(evt.target)
   }
@@ -44,6 +45,7 @@ function showCell (evt) {
   // Check if user has won
   if (checkForWin()) {
     window.alert('You won')
+    resetGame()
   }
 }
 
@@ -57,6 +59,7 @@ function markCell (evt) {
  // Check if user has won
   if (checkForWin()) {
     window.alert('You won')
+    resetGame()
   }
 }
 
@@ -134,4 +137,25 @@ function elementToCell (element) {
     }
   }
   return cell
+}
+
+function resetGame () {
+  // HTML should be reset
+  // all divs have the hidden class
+  // no div is marked
+  // Set innerHTML to blank
+  var boardCells = document.getElementsByClassName('board')[0].children
+  for (var i = 0; i < boardCells.length; i++) {
+    boardCells[i].classList.add('hidden')
+    boardCells[i].classList.remove('marked')
+    boardCells[i].innerHTML = ''
+  }
+
+  // Board cells is emptied, and will be rebuild when startGame is called
+  board = {
+    cells: []
+  }
+
+  // Start game again
+  startGame()
 }
