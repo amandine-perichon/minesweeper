@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', startGame)
 
 var board = {
-  cell: []
+  cells: []
 }
 
 function startGame () {
@@ -9,6 +9,10 @@ function startGame () {
   for (var i = 0; i < boardCells.length; i++) {
     addListeners(boardCells[i])
     addCellToBoard(boardCells[i])
+  }
+
+  for (var i = 0; i < board.cells.length; i++) {
+    board.cells[i].surroundingMines = countMines(board.cells[i])
   }
 }
 
@@ -24,12 +28,13 @@ function addCellToBoard (element) {
   newCell.row = getRow(element)
   newCell.col = getCol(element)
   newCell.isMine = element.classList.contains('mine')
-  board.cell.push(newCell)
+  board.cells.push(newCell)
 }
 
 // Show content of a cell: white or bomb
 function showCell (evt) {
   evt.target.classList.remove('hidden')
+  showSurrounding(evt.target)
 }
 
 // Mark cell as a potential bomb
@@ -43,7 +48,7 @@ function getRow (element) {
   var classes = element.classList
   for (var i = 0; i < classes.length; i++) {
     if (classes[i].substring(0, 3) === 'row') {
-      return classes[i].split('-')[1]
+      return Number(classes[i].split('-')[1])
     }
   }
 }
@@ -53,8 +58,20 @@ function getCol (element) {
   var classes = element.classList
   for (var i = 0; i < classes.length; i++) {
     if (classes[i].substring(0, 3) === 'col') {
-      return classes[i].split('-')[1]
+      return Number(classes[i].split('-')[1])
     }
   }
+}
+
+// Count mines for a given cell from the board
+function countMines (cell) {
+  var surroundingCells = getSurroundingCells(cell.row, cell.col)
+  var count = 0
+  for (var i = 0; i < surroundingCells.length; i++) {
+    if (surroundingCells[i].isMine) {
+      count++
+    }
+  }
+  return count
 }
 
