@@ -35,6 +35,11 @@ function addCellToBoard (element) {
 function showCell (evt) {
   evt.target.classList.remove('hidden')
   showSurrounding(evt.target)
+
+  // Check if user has won
+  if (checkForWin()) {
+    window.alert('You won')
+  }
 }
 
 // Mark cell as a potential bomb
@@ -43,12 +48,18 @@ function markCell (evt) {
   evt.target.classList.toggle('marked')
   evt.target.classList.toggle('hidden')
 
+  // Keep track of marked cells in global objects
   for (var i = 0; i < board.cells.length; i++) {
     if (board.cells[i].row === getRow(evt.target) &&
     board.cells[i].col === getCol(evt.target)) {
       board.cells[i].isMarked = true
       break
     }
+  }
+
+ // Check if user has won
+  if (checkForWin()) {
+    window.alert('You won')
   }
 }
 
@@ -82,5 +93,27 @@ function countSurroundingMines (cell) {
     }
   }
   return count
+}
+
+function checkForWin () {
+  // Check that all cells that all bombs have been marked
+  // and there are no marked cells that are not bombs
+  // and there is no hidden cell left
+  var result = true
+  for (var i = 0; i < board.cells.length; i++) {
+    if ((board.cells[i].isMine === false && board.cells[i].isMarked === true) ||
+     (board.cells[i].isMine === true && board.cells[i].isMarked === undefined)) {
+      result = false
+      break
+    }
+  }
+  var boardCells = document.getElementsByClassName('board')[0].children
+  for (var i = 0; i < boardCells.length; i++) {
+    if (boardCells[i].classList.contains('hidden')) {
+      result = false
+      break
+    }
+  }
+  return result
 }
 
