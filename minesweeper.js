@@ -9,9 +9,6 @@ function startGame () {
   for (var i = 0; i < boardCells.length; i++) {
     addListeners(boardCells[i])
     addCellToBoard(boardCells[i])
-  }
-
-  for (var i = 0; i < board.cells.length; i++) {
     board.cells[i].surroundingMines = countSurroundingMines(board.cells[i])
   }
 }
@@ -34,7 +31,12 @@ function addCellToBoard (element) {
 // Show content of a cell: white or bomb
 function showCell (evt) {
   evt.target.classList.remove('hidden')
+  if (evt.target.classList.contains('mine')) {
+    showAllMines()
+    window.alert('You lose')
+  } else {
   showSurrounding(evt.target)
+  }
 
   // Check if user has won
   if (checkForWin()) {
@@ -115,5 +117,15 @@ function checkForWin () {
     }
   }
   return result
+}
+
+function showAllMines () {
+  var boardCells = document.getElementsByClassName('board')[0].children
+  for (var i = 0; i < boardCells.length; i++) {
+    if (boardCells[i].classList.contains('mine')) {
+      boardCells[i].classList.remove('marked')
+      boardCells[i].classList.remove('hidden')
+    }
+  }
 }
 
