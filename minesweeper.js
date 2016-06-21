@@ -142,17 +142,9 @@ function elementToCell (element) {
 }
 
 function resetGame () {
-  // HTML should be reset
-  // all divs have the hidden class
-  // no div is marked
-  // Set innerHTML to blank
-  var boardCells = document.getElementsByClassName('board')[0].children
-  for (var i = 0; i < boardCells.length; i++) {
-    boardCells[i].classList.add('hidden')
-    boardCells[i].classList.remove('marked')
-    boardCells[i].innerHTML = ''
-  }
-
+  // HTML should be reset - board div should be empty
+  var boardNode = document.getElementsByClassName('board')[0]
+  boardNode.innerHTML = ''
   // Board cells is emptied, and will be rebuild when startGame is called
   board = {
     cells: []
@@ -175,6 +167,7 @@ function generateBoard (boardSize) {
   }
 
   // Generate mines coordinates randomly
+  // TO DO: Does not check for duplicates
   var mines = []
   for (var i = 0; i < boardSize; i++) {
     var mine = {}
@@ -204,7 +197,15 @@ function generateBoard (boardSize) {
 
   // Create board in HTML based on board object 
   // Each div should have row-x col-y hidden
-
+  var BoardNode = document.getElementsByClassName('board')[0]
+  board.cells.forEach(function (cell) {
+    var div = document.createElement('div')
+    div.classList.add('row-'+ cell.row, 'col-' + cell.col, 'hidden')
+    if (cell.isMine) {
+      div.classList.add('mine')
+    }
+    BoardNode.appendChild(div)
+  })
 }
 
 // From MDN:
