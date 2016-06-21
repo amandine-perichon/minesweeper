@@ -6,7 +6,7 @@ var board = {
 
 function startGame () {
   // Generate board
-  generateBoard(5)
+  generateBoard('large')
 
   // Add event listeners
   var boardCells = document.getElementsByClassName('board')[0].children
@@ -109,8 +109,8 @@ function checkForWin () {
     }
   }
   var boardCells = document.getElementsByClassName('board')[0].children
-  for (var i = 0; i < boardCells.length; i++) {
-    if (boardCells[i].classList.contains('hidden')) {
+  for (var j = 0; j < boardCells.length; j++) {
+    if (boardCells[j].classList.contains('hidden')) {
       result = false
       break
     }
@@ -145,6 +145,7 @@ function resetGame () {
   // HTML should be reset - board div should be empty
   var boardNode = document.getElementsByClassName('board')[0]
   boardNode.innerHTML = ''
+
   // Board cells is emptied, and will be rebuild when startGame is called
   board = {
     cells: []
@@ -155,7 +156,21 @@ function resetGame () {
 }
 
 // Generate the board object and HTML board
-function generateBoard (boardSize) {
+function generateBoard (size) {
+  var boardSize
+  switch (size) {
+    case 'small':
+      boardSize = 5
+      break
+    case 'medium':
+      boardSize = 6
+      break
+    case 'large':
+      boardSize = 7
+      break
+  }
+  board.size = boardSize
+
   // Add cells to board with the row and col parameters
   for (i = 0; i < boardSize; i++) {
     for (var j = 0; j < boardSize; j++) {
@@ -192,15 +207,16 @@ function generateBoard (boardSize) {
 
   // Count surrounding mines using existing function
   for (var i = 0; i < board.cells.length; i++) {
-      board.cells[i].surroundingMines = countSurroundingMines(board.cells[i])
+    board.cells[i].surroundingMines = countSurroundingMines(board.cells[i])
   }
 
-  // Create board in HTML based on board object 
+  // Create board in HTML based on board object
   // Each div should have row-x col-y hidden
   var BoardNode = document.getElementsByClassName('board')[0]
+  BoardNode.classList.add(size)
   board.cells.forEach(function (cell) {
     var div = document.createElement('div')
-    div.classList.add('row-'+ cell.row, 'col-' + cell.col, 'hidden')
+    div.classList.add('row-' + cell.row, 'col-' + cell.col, 'hidden')
     if (cell.isMine) {
       div.classList.add('mine')
     }
@@ -212,5 +228,6 @@ function generateBoard (boardSize) {
 // Returns a random integer between min (included) and max (included)
 // Using Math.round() will give you a non-uniform distribution!
 function getRandomIntInclusive(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+  return Math.floor(Math.random() * (max - min + 1)) + min
 }
+

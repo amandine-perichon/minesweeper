@@ -9,13 +9,27 @@ body {
   justify-content: center;
 }
 
-.board {
+
+.board.small {
   width: 420px;
   height: 420px;
   display: flex;
   flex-wrap: wrap;
 }
 
+.board.medium {
+  width: 500px;
+  height: 500px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.board.large {
+  width: 600px;
+  height: 600px;
+  display: flex;
+  flex-wrap: wrap;
+}
 .board div {
   color: green;
   font-size: 2rem;

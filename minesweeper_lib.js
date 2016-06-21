@@ -65,6 +65,6 @@ function getLowerBound (n) {
 }
 
 function getUpperBound (n) {
-  var limit = board.MAX_CELLS-1 || 4
+  var limit = board.size - 1
   return n + 1 > limit ? limit : n + 1
 }
