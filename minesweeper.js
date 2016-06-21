@@ -1,12 +1,26 @@
-document.addEventListener('DOMContentLoaded', startGame)
-
 var board = {
   cells: []
 }
 
+var userBoardSize = 'small'
+
+document.addEventListener('DOMContentLoaded', function () {
+  // add event listeners for buttons
+  var buttons = document.getElementsByClassName('sizes')[0].children
+  for (var i = 0; i < buttons.length; i++) {
+    buttons[i].addEventListener('click', function (evt) {
+      userBoardSize = evt.target.classList[0]
+      resetGame()
+    })
+  }
+
+  // Start the game
+  startGame()
+})
+
 function startGame () {
   // Generate board
-  generateBoard('large')
+  generateBoard(userBoardSize)
 
   // Add event listeners
   var boardCells = document.getElementsByClassName('board')[0].children
@@ -145,6 +159,7 @@ function resetGame () {
   // HTML should be reset - board div should be empty
   var boardNode = document.getElementsByClassName('board')[0]
   boardNode.innerHTML = ''
+  boardNode.classList.remove('small', 'medium', 'large')
 
   // Board cells is emptied, and will be rebuild when startGame is called
   board = {
@@ -212,15 +227,15 @@ function generateBoard (size) {
 
   // Create board in HTML based on board object
   // Each div should have row-x col-y hidden
-  var BoardNode = document.getElementsByClassName('board')[0]
-  BoardNode.classList.add(size)
+  var boardNode = document.getElementsByClassName('board')[0]
+  boardNode.classList.add(size)
   board.cells.forEach(function (cell) {
     var div = document.createElement('div')
     div.classList.add('row-' + cell.row, 'col-' + cell.col, 'hidden')
     if (cell.isMine) {
       div.classList.add('mine')
     }
-    BoardNode.appendChild(div)
+    boardNode.appendChild(div)
   })
 }
 
