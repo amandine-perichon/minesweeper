@@ -35,15 +35,6 @@ function addListeners (element) {
   element.addEventListener('contextmenu', markCell)
 }
 
-// Add cell data to board object
-function addCellToBoard (element) {
-  var newCell = {}
-  newCell.row = getRow(element)
-  newCell.col = getCol(element)
-  newCell.isMine = element.classList.contains('mine')
-  board.cells.push(newCell)
-}
-
 // Show content of a cell: white or bomb
 function showCell (evt) {
   evt.target.classList.remove('hidden')
