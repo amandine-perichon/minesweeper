@@ -211,7 +211,16 @@ function generateBoard (sizeClass) {
     var mine = {}
     mine.row = getRandomIntInclusive(0, board.size - 1)
     mine.col = getRandomIntInclusive(0, board.size - 1)
-    mines.push(mine)
+    // check if mine already included in mines
+    var mineDuplicate = false
+    mines.forEach(function (m) {
+      if (m.row === mine.row && m.col === mine.col) {
+        mineDuplicate = true
+      }
+    })
+    if (!mineDuplicate) {
+      mines.push(mine)
+    }
   }
 
   // Include mine flag in board
