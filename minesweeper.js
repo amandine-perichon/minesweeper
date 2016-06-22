@@ -37,7 +37,7 @@ function startGame () {
 
 // Add event listeners to one Node element
 // left click -> shows cell content
-// right click -> mark cell as a bomb
+// right click -> mark cell as a mine
 function addListeners (element) {
   element.addEventListener('click', showCell)
   element.addEventListener('contextmenu', markCell)
@@ -61,7 +61,7 @@ function showCell (evt) {
   checkForWin()
 }
 
-// Mark cell as a potential bomb
+// Mark cell as a potential mine
 function markCell (evt) {
   evt.preventDefault()
   evt.target.classList.toggle('marked')
@@ -111,9 +111,10 @@ function countSurroundingMines (cell) {
   return count
 }
 
+// Check if user has won the game
 function checkForWin () {
-  // Check that all cells that all bombs have been marked
-  // and there are no marked cells that are not bombs
+  // Check that that all mines have been marked
+  // and there are no marked cells that are not mines
   // and there is no hidden cell left
   var result = true
   for (var i = 0; i < board.cells.length; i++) {
@@ -130,7 +131,6 @@ function checkForWin () {
       break
     }
   }
-
   // if user has won, display 'You won' msg, and reset game
   if (result) {
     document.getElementById('applause').play()
@@ -139,6 +139,7 @@ function checkForWin () {
   }
 }
 
+// Unhide all mines on the board
 function showAllMines () {
   var boardCells = document.getElementsByClassName('board')[0].children
   for (var i = 0; i < boardCells.length; i++) {
@@ -150,6 +151,7 @@ function showAllMines () {
   document.getElementById('bomb').play()
 }
 
+// Return cell from board object based on Node element
 function elementToCell (element) {
   for (var i = 0; i < board.cells.length; i++) {
     var cell
@@ -162,13 +164,14 @@ function elementToCell (element) {
   return cell
 }
 
+// Reset the game - board size in the last one chosen by the user
 function resetGame () {
-  // HTML should be reset - board div should be empty
+  // Reset HTML - board div should be empty and size removed
   var boardNode = document.getElementsByClassName('board')[0]
   boardNode.innerHTML = ''
   boardNode.classList.remove('small', 'medium', 'large')
 
-  // Board cells is emptied, and will be rebuild when startGame is called
+  // board object is reset, and will be rebuild when startGame is called
   board = {
     cells: []
   }
@@ -179,23 +182,21 @@ function resetGame () {
 
 // Generate the board object and HTML board
 function generateBoard (size) {
-  var boardSize
   switch (size) {
     case 'small':
-      boardSize = 5
+      board.size = 5
       break
     case 'medium':
-      boardSize = 6
+      board.size = 6
       break
     case 'large':
-      boardSize = 7
+      board.size = 7
       break
   }
-  board.size = boardSize
 
   // Add cells to board with the row and col parameters
-  for (i = 0; i < boardSize; i++) {
-    for (var j = 0; j < boardSize; j++) {
+  for (i = 0; i < board.size; i++) {
+    for (var j = 0; j < board.size; j++) {
       var cell = {}
       cell.row = i
       cell.col = j
@@ -204,14 +205,15 @@ function generateBoard (size) {
   }
 
   // Generate mines coordinates randomly
-  // TO DO: Does not check for duplicates
+  // number of mines equal size of the board
   var mines = []
-  for (var i = 0; i < boardSize; i++) {
+  while (mines.length < board.size) {
     var mine = {}
-    mine.row = getRandomIntInclusive(0, boardSize - 1)
-    mine.col = getRandomIntInclusive(0, boardSize - 1)
+    mine.row = getRandomIntInclusive(0, board.size - 1)
+    mine.col = getRandomIntInclusive(0, board.size - 1)
     mines.push(mine)
   }
+  console.log(mines.length)
 
   // Include mine flag in board
   // set isMine = true if included in mines
@@ -249,7 +251,7 @@ function generateBoard (size) {
 // From MDN:
 // Returns a random integer between min (included) and max (included)
 // Using Math.round() will give you a non-uniform distribution!
-function getRandomIntInclusive(min, max) {
+function getRandomIntInclusive (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
