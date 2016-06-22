@@ -1,11 +1,13 @@
+// Create global variables
 var board = {
   cells: []
 }
 
-var userBoardSize = 'small'
+var userBoardSize
 
+// When DOM content is loaded, initialize the page
 document.addEventListener('DOMContentLoaded', function () {
-  // add event listeners for buttons
+  // Add event listeners to buttons
   var buttons = document.getElementsByClassName('sizes')[0].children
   for (var i = 0; i < buttons.length; i++) {
     buttons[i].addEventListener('click', function (evt) {
@@ -14,30 +16,40 @@ document.addEventListener('DOMContentLoaded', function () {
     })
   }
 
+  // By default start game with board size small
+  userBoardSize = 'small'
   // Start the game
   startGame()
 })
 
+// Generate the board and add event listeners to the board cells to start the game
 function startGame () {
   // Generate board
   generateBoard(userBoardSize)
 
   // Add event listeners
+  // Tried using forEach here but boardCells is a nodeList, not an array
   var boardCells = document.getElementsByClassName('board')[0].children
   for (var i = 0; i < boardCells.length; i++) {
     addListeners(boardCells[i])
   }
 }
 
-// Add event listener click on one element
+// Add event listeners to one Node element
+// left click -> shows cell content
+// right click -> mark cell as a bomb
 function addListeners (element) {
   element.addEventListener('click', showCell)
   element.addEventListener('contextmenu', markCell)
 }
 
-// Show content of a cell: white or bomb
+// Show content of a cell
 function showCell (evt) {
+  // unhide content of the cell
   evt.target.classList.remove('hidden')
+
+  // if cell is a mine, show all mines, display You lose msg, and reset game
+  // if cell is not a mine, show the content of surrounding cells
   if (evt.target.classList.contains('mine')) {
     showAllMines()
     window.alert('You lose')
@@ -45,28 +57,26 @@ function showCell (evt) {
   } else {
     showSurrounding(evt.target)
   }
-
-  // Check if user has won
-  if (checkForWin()) {
-    document.getElementById('applause').play()
-    window.alert('You won')
-    resetGame()
-  }
+  // Check if user has won, if so, display You won msg and reset game
+  checkForWin()
 }
 
 // Mark cell as a potential bomb
 function markCell (evt) {
   evt.preventDefault()
   evt.target.classList.toggle('marked')
+  // Remove hidden otherwise prevent checkForWin from working correctly
   evt.target.classList.toggle('hidden')
-  elementToCell(evt.target).isMarked = true
-
- // Check if user has won
-  if (checkForWin()) {
-    document.getElementById('applause').play()
-    window.alert('You won')
-    resetGame()
+  // Set cell property isMarked in board object to true
+  // !! isMarked needs to be remove if unmarked
+  var cell = elementToCell(evt.target)
+  if (!cell.hasOwnProperty('isMarked')) {
+    cell.isMarked = true
+  } else {
+    delete cell.isMarked
   }
+  // Check if user has won
+  checkForWin()
 }
 
 // Get row number of an element
@@ -120,7 +130,13 @@ function checkForWin () {
       break
     }
   }
-  return result
+
+  // if user has won, display 'You won' msg, and reset game
+  if (result) {
+    document.getElementById('applause').play()
+    window.alert('You won')
+    resetGame()
+  }
 }
 
 function showAllMines () {
