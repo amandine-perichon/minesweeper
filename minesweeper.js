@@ -181,8 +181,8 @@ function resetGame () {
 }
 
 // Generate the board object and HTML board
-function generateBoard (size) {
-  switch (size) {
+function generateBoard (sizeClass) {
+  switch (sizeClass) {
     case 'small':
       board.size = 5
       break
@@ -213,7 +213,6 @@ function generateBoard (size) {
     mine.col = getRandomIntInclusive(0, board.size - 1)
     mines.push(mine)
   }
-  console.log(mines.length)
 
   // Include mine flag in board
   // set isMine = true if included in mines
@@ -229,7 +228,7 @@ function generateBoard (size) {
     }
   })
 
-  // Count surrounding mines using existing function
+  // Count surrounding mines
   for (var i = 0; i < board.cells.length; i++) {
     board.cells[i].surroundingMines = countSurroundingMines(board.cells[i])
   }
@@ -237,7 +236,7 @@ function generateBoard (size) {
   // Create board in HTML based on board object
   // Each div should have row-x col-y hidden
   var boardNode = document.getElementsByClassName('board')[0]
-  boardNode.classList.add(size)
+  boardNode.classList.add(sizeClass)
   board.cells.forEach(function (cell) {
     var div = document.createElement('div')
     div.classList.add('row-' + cell.row, 'col-' + cell.col, 'hidden')
